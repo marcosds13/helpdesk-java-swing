@@ -1,2 +1,1 @@
-Simple Java Ticket System.
-
+Simple Java Ticket System

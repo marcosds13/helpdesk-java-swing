@@ -11,15 +11,19 @@ target/
 *.iws
 *.iml
 *.ipr
+hs_err_*
 
 ### Eclipse ###
 .apt_generated
-.classpath
+.classpat
 .factorypath
 .project
 .settings
 .springBeans
 .sts4-cache
+
+#Config File for DB Connection
+src/main/resources/config.properties
 
 ### NetBeans ###
 /nbproject/private/

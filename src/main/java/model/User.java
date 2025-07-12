@@ -19,6 +19,13 @@ public class User {
     //role associado ao user
     private int role_id;
 
+    public User () {}
+
+    public User(String user, String password) {
+        this.username = user;
+        this.password = password;
+    }
+
     /**
      * Gets e Setters do Objeto User
      * **/

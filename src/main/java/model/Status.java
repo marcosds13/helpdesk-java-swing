@@ -7,6 +7,13 @@ public class Status {
     //Nome de Status do Ticket
     private String name;
 
+    public Status() {}
+
+    public Status(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     /**
      * Gets e Setters do Objeto Status
      * **/

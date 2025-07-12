@@ -20,6 +20,18 @@ public class Ticket {
     //ID do User com a role Técnico responsável pelo Ticket
     private int assigned_to;
 
+    //Constructor
+    public Ticket() {}
+
+    public Ticket(int id, String title, String description, int status_id, int created_by, int assigned_to) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status_id = status_id;
+        this.created_by = created_by;
+        this.assigned_to = assigned_to;
+    }
+    //
     /*
     Gets e Setters do Objeto Ticket
      */

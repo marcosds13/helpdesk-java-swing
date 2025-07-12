@@ -19,6 +19,15 @@ public class Comment {
     //Timestamp de quando o comentário foi enviado
     private LocalDateTime sent_at;
 
+    public Comment() {}
+    public Comment(int id, int ticket_id, int user_id, String message) {
+        this.id = id;
+        this.ticket_id = ticket_id;
+        this.user_id = user_id;
+        this.message = message;
+        this.sent_at = LocalDateTime.now();
+    }
+
      /*
     Gets e Setters do Objeto Comment
      */

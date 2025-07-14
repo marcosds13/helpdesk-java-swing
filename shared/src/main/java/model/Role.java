@@ -7,6 +7,7 @@ public class Role {
     //Nome da Role
     private String name;
 
+    //Constructor
     public Role() {}
     public Role(int id, String name) {
         this.id = id;

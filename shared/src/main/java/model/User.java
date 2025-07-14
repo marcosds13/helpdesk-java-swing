@@ -19,6 +19,7 @@ public class User {
     //role associado ao user
     private int role_id;
 
+    //Constructor
     public User () {}
 
     public User(String user, String password) {

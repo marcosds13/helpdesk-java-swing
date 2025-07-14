@@ -7,6 +7,7 @@ public class Status {
     //Nome de Status do Ticket
     private String name;
 
+    //Constructor
     public Status() {}
 
     public Status(int id, String name) {

@@ -19,6 +19,7 @@ public class Comment {
     //Timestamp de quando o comentário foi enviado
     private LocalDateTime sent_at;
 
+    //Constructor
     public Comment() {}
     public Comment(int id, int ticket_id, int user_id, String message) {
         this.id = id;

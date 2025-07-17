@@ -32,6 +32,7 @@ username VARCHAR(50) NOT NULL UNIQUE,
 password VARCHAR(255) NOT NULL,
 name VARCHAR(100) NOT NULL,
 email VARCHAR(100) NOT NULL UNIQUE,
+resetpw INT NOT NULL,
 role_id INT NOT NULL,
 FOREIGN KEY (role_id) REFERENCES roles(id)
 );
@@ -71,10 +72,10 @@ INSERT INTO status_types (name) VALUES
 ('ASSIGNED'),
 ('CLOSED');
 
--- Insert Example Users
-INSERT INTO users (username, password, role_id, name, email) VALUES
-('admin', 'adminpass', 1, 'admin', 'admin@test.com'),
-('tech1', 'techpass', 2, 'tech1', 'tech1@test.com'),
-('user1', 'userpass', 3, 'user1', 'user1@test.com');
+-- Insert Example Users (Default Password : 12345 )
+INSERT INTO users (username, password, role_id, name, email, resetpw) VALUES
+('admin', '$2a$12$n67kEpiNkghs9z9vGGc4DecZbLIuqm3HZkxH9lWA/Gr/sw/VQj0ne', 1, 'admin', 'admin@test.com', 1),
+('tech1', '$2a$12$n67kEpiNkghs9z9vGGc4DecZbLIuqm3HZkxH9lWA/Gr/sw/VQj0ne', 2, 'tech1', 'tech1@test.com', 1),
+('user1', '$2a$12$n67kEpiNkghs9z9vGGc4DecZbLIuqm3HZkxH9lWA/Gr/sw/VQj0ne', 3, 'user1', 'user1@test.com', 1);
 
 ```

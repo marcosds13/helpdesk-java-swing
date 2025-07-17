@@ -18,6 +18,8 @@ public class User {
     private String email;
     //role associado ao user
     private int role_id;
+    //Int 0 or 1 to define if user needs to reset Password
+    private int resetpw;
 
     //Constructor
     public User () {}
@@ -43,4 +45,11 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public int getRole_id() { return role_id; }
     public void setRole_id(int role_id) { this.role_id = role_id; }
+    public int getResetpw() { return resetpw; }
+    public void setResetpw(int resetpw) { this.resetpw = resetpw; }
+
+    public boolean isLoginValid() {
+        return username != null && !username.isEmpty()
+                && password != null && !password.isEmpty();
+    }
 }

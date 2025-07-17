@@ -2,15 +2,28 @@ package main;
 
 // importa a interface de login
 import controller.LoginController;
+import utils.ConnectionDB;
 
-/**
- * Classe principal para arrancar a aplicação e.
- * Esta classe serve como ponto de entrada da aplicação,
- */
+import java.sql.Connection;
+
+
 public class Main {
 
     public static void main(String[] args) {
-        // inicia a interface de login, passando os argumentos da consola
-        new LoginController();
+        //App starts by checking if MySQL connection was successful.
+        {
+            try (Connection con = ConnectionDB.getConnection()) {
+                if (con != null && !con.isClosed()) {
+                    System.out.println("✅ [INFO] Database connection established successfully!");
+                } else {
+                    System.out.println("❌ [ERROR] Failed to establish database connection.");
+                }
+            } catch (Exception e) {
+                System.out.println("❌ [ERROR] Exception while connecting to the database: " + e.getMessage());
+                e.printStackTrace();
+            }
+            // Starts Login Controller to open Login View
+            new LoginController();
+        }
     }
 }

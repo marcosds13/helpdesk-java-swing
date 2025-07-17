@@ -1,7 +1,11 @@
 package controller;
 
+import dao.UserDAO;
 import model.User;
+import service.PasswordEncryptionService;
 import view.LoginView;
+import javax.swing.*;
+
 
 public class LoginController {
 
@@ -17,7 +21,25 @@ public class LoginController {
 
     private void completeLogin() {
         User input = loginView.getDataLogin();
-        System.out.println(input.getUsername() + " " + input.getPassword());
+
+        if (!input.isLoginValid()) {
+            JOptionPane.showMessageDialog(loginView, "Please make sure Username and Password are filled.");
+        }
+
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUsername(input.getUsername());
+
+
+        if (user != null && PasswordEncryptionService.verifyPassword(input.getPassword(), user.getPassword())) {
+            System.out.println(input.getPassword() + " " + user.getPassword());
+
+            JOptionPane.showMessageDialog(loginView, "Login Successful.");
+            loginView.dispose();
+            new MenuController(user);
+        } else {
+            JOptionPane.showMessageDialog(loginView, "Invalid Username or Password.");
+        }
+
     }
 
 }

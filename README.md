@@ -48,6 +48,7 @@ assigned_to INT,
 FOREIGN KEY (status_id) REFERENCES status_types(id),
 FOREIGN KEY (created_by) REFERENCES users(id),
 FOREIGN KEY (assigned_to) REFERENCES users(id)
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- Comments table

@@ -2,6 +2,7 @@ package view;
 
 import model.User;
 import controller.LoginController;
+import utils.ThemeManager;
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,13 +21,24 @@ public class LoginView extends JFrame {
     }
 
     private void InicializeComponents() {
-        JPanel title =  new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel titlelabel = new JLabel("Helpdesk");
-        titlelabel.setFont(new Font (titlelabel.getFont().getFontName(), Font.BOLD, 24));
-        title.add(titlelabel);
-        title.setBackground(Color.GRAY);
+
+        JPanel title = new JPanel(new BorderLayout());
+        JLabel titlelabel = new JLabel("Helpdesk Front-Office", SwingConstants.CENTER);
+        titlelabel.setFont(new Font(titlelabel.getFont().getFontName(), Font.BOLD, 18));
         titlelabel.setForeground(Color.WHITE);
 
+        // Botão para alternar o tema
+        JButton btnToggleTheme = new JButton("🌙 Tema");
+        btnToggleTheme.setFocusable(false);
+        btnToggleTheme.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+
+        // Adiciona título e botão ao painel do topo
+        title.add(titlelabel, BorderLayout.CENTER);
+        title.add(btnToggleTheme, BorderLayout.EAST);
+        title.setBackground(Color.GRAY); // Apenas inicial, FlatLaf substitui depois
+
+        //Painel Formulario
         JPanel painel = new JPanel(new GridLayout(3, 2, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -57,6 +69,16 @@ public class LoginView extends JFrame {
         setLayout(new BorderLayout());
         add(title, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
+
+        btnToggleTheme.addActionListener(e -> {
+            ThemeManager.toggleTheme(btnToggleTheme);
+
+            if (ThemeManager.isDarkMode()) {
+                btnToggleTheme.setText("☀️ Tema");
+            } else {
+                btnToggleTheme.setText("🌙 Tema");
+            }
+        });
     }
 
 

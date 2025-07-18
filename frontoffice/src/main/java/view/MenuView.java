@@ -3,7 +3,6 @@ package view;
 import model.User;
 import javax.swing.*;
 import java.awt.*;
-import controller.MenuController;
 
 public class MenuView extends JFrame {
     private JButton tbd;
@@ -19,7 +18,7 @@ public class MenuView extends JFrame {
 
         JPanel painel = new JPanel(new GridLayout(0, 1, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        painel.setBackground(new Color(100, 169, 220, 255));
+
 
         tbd = new JButton("WIP");
         btnLogout = new JButton("Logout");

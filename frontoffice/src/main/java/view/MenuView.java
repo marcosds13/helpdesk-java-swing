@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MenuView extends JFrame {
-    private JButton tbd;
+    private JButton btndashboard;
     private final JButton btnLogout;
 
     public MenuView(User user) {
@@ -20,16 +20,16 @@ public class MenuView extends JFrame {
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 
-        tbd = new JButton("WIP");
+        btndashboard = new JButton("Tickets");
         btnLogout = new JButton("Logout");
 
-        painel.add(tbd);
+        painel.add(btndashboard);
         painel.add(btnLogout);
         setContentPane(painel);
     }
 
-    public JButton getTbd() {
-        return tbd;
+    public JButton getBtndashboard() {
+        return btndashboard;
     }
     public JButton getBtnLogout() {
         return btnLogout;

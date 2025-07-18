@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class Ticket {
 
     //Identificador único do Ticket (chave primária)
@@ -20,6 +22,9 @@ public class Ticket {
     //ID do User com a role Técnico responsável pelo Ticket
     private int assigned_to;
 
+    //Timestamp de quando o comentário foi enviado
+    private LocalDateTime created_at;
+
     //Constructor
     public Ticket() {}
 
@@ -30,6 +35,7 @@ public class Ticket {
         this.status_id = status_id;
         this.created_by = created_by;
         this.assigned_to = assigned_to;
+        this.created_at = LocalDateTime.now();
     }
     //
     /*
@@ -48,6 +54,8 @@ public class Ticket {
     public void setCreated_by(int created_by) { this.created_by = created_by; }
     public int getAssigned_to() { return assigned_to; }
     public void setAssigned_to(int assigned_to) { this.assigned_to = assigned_to; }
+    public LocalDateTime getCreated_at() { return created_at; }
+    public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
 
 
 }

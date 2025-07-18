@@ -4,6 +4,8 @@ import model.User;
 import view.LoginView;
 import view.MenuView;
 
+import javax.swing.*;
+
 public class MenuController {
 
     private final MenuView menuView;
@@ -17,6 +19,11 @@ public class MenuController {
         menuView.getBtnLogout().addActionListener(e -> {
             menuView.dispose();
             new LoginController();
+        });
+        menuView.getBtndashboard().addActionListener(e ->{
+            JOptionPane.showMessageDialog(menuView, "Not yet implemented");
+            //menuView.dispose();
+            //new TicketDashboardController();
         });
     }
 

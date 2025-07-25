@@ -19,13 +19,49 @@ public class TicketDAO {
      * @return a list of Ticket objects representing all the tickets in the database.
      *         The list will be empty if no tickets are found or if an error occurs during retrieval.
      */
-    public List<Ticket> ListAll(){
+    public List<Ticket> listAll(){
         List<Ticket> lista = new ArrayList<>();
         String sql = "SELECT * FROM tickets";
         try (
             Connection con = ConnectionDB.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
         ) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket();
+                t.setId(rs.getInt("id"));
+                t.setTitle(rs.getString("title"));
+                t.setDescription(rs.getString("description"));
+                t.setStatus_id(rs.getInt("status_id"));
+                t.setCreated_by(rs.getInt("created_by"));
+                t.setAssigned_to(rs.getInt("assigned_to"));
+                t.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+                lista.add(t);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    /**
+     * Retrieves a list of Ticket objects created by a specific user.
+     * Each retrieved ticket contains details such as id, title, description,
+     * status, creator, assignee, and creation timestamp.
+     *
+     * @param createdBy the unique identifier of the user who created the tickets
+     * @return a list of Ticket objects created by the specified user.
+     *         The list will be empty if no tickets are found or if an error occurs during retrieval.
+     */
+    public List<Ticket> listByCreator(int createdBy) {
+        List<Ticket> lista = new ArrayList<>();
+        String sql = "SELECT * FROM tickets WHERE created_by = ?";
+        try (
+                Connection con = ConnectionDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+        ) {
+            ps.setInt(1, createdBy);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket();

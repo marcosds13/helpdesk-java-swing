@@ -27,7 +27,7 @@ public class LoginController {
         }
 
         UserDAO userDAO = new UserDAO();
-        User user = userDAO.getUsername(input.getUsername());
+        User user = userDAO.getByUsername(input.getUsername());
 
 
         if (user != null && PasswordEncryptionService.verifyPassword(input.getPassword(), user.getPassword())) {

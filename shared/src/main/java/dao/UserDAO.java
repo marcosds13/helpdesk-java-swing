@@ -23,7 +23,7 @@ public class UserDAO {
      * @return a list of User objects containing all users in the database. If an error
      *         occurs, an empty list is returned.
      */
-    public static List<User> listAll() {
+    public List<User> listAll() {
         List<User> users = new ArrayList<>();
         try (Connection con = ConnectionDB.getConnection()) {
             String sql = "SELECT * FROM users";
@@ -121,7 +121,7 @@ public class UserDAO {
      * @return a User object representing the user with the specified username,
      *         or null if no user is found or an error occurs during the operation
      */
-    public User getUsername(String username) {
+    public User getByUsername(String username) {
         User user = null;
         try (Connection con = ConnectionDB.getConnection()) {
             String sql = "SELECT * FROM users WHERE username = ?";
@@ -142,6 +142,40 @@ public class UserDAO {
     }
 
     /**
+     * Retrieves a user from the database based on the provided ID.
+     *
+     * This method connects to the database, executes a query to find
+     * a user with the specified ID, and populates a User object with
+     * the retrieved data. If no user is found or an error occurs, null
+     * is returned.
+     *
+     * @param id the ID of the user to retrieve from the database
+     * @return a User object representing the user with the specified ID,
+     *         or null if no user is found or an error occurs
+     */
+    public User getByID(int id) {
+        User user = null;
+        try (Connection con = ConnectionDB.getConnection()) {
+            String sql = "SELECT * FROM users WHERE id = ?";
+            assert con != null;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = new User();
+                fillUserData(user, rs);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+
+
+    /**
      * Populates a User object with data from the given ResultSet.
      * This method maps the columns from the ResultSet to the corresponding
      * fields in the User object.
@@ -157,6 +191,7 @@ public class UserDAO {
         user.setPassword(rs.getString("password"));
         user.setEmail(rs.getString("email"));
         user.setResetpw(rs.getInt("resetpw"));
+        user.setRole_id(rs.getInt("role_id"));
     }
 
 

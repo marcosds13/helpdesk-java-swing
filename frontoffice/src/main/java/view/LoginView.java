@@ -28,7 +28,13 @@ public class LoginView extends JFrame {
         titlelabel.setForeground(Color.WHITE);
 
         // Botão para alternar o tema
+
         JButton btnToggleTheme = new JButton("🌙 Tema");
+        if (ThemeManager.isDarkMode()) {
+            btnToggleTheme.setText("☀️ Tema");
+        } else {
+            btnToggleTheme.setText("🌙 Tema");
+        }
         btnToggleTheme.setFocusable(false);
         btnToggleTheme.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 

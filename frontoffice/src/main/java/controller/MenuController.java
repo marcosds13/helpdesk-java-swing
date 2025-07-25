@@ -3,17 +3,18 @@ package controller;
 import model.User;
 import view.LoginView;
 import view.MenuView;
+import view.TicketDashboardView;
 
 import javax.swing.*;
 
 public class MenuController {
 
     private final MenuView menuView;
-    private final User LoggedUser;
+    private final User loggedUser;
 
-    public MenuController(User LoggedUser) {
-        this.LoggedUser = LoggedUser;
-        menuView = new MenuView(LoggedUser);
+    public MenuController(User loggedUser) {
+        this.loggedUser = loggedUser;
+        menuView = new MenuView(loggedUser);
         menuView.setVisible(true);
 
         menuView.getBtnLogout().addActionListener(e -> {
@@ -21,9 +22,8 @@ public class MenuController {
             new LoginController();
         });
         menuView.getBtndashboard().addActionListener(e ->{
-            JOptionPane.showMessageDialog(menuView, "Not yet implemented");
-            //menuView.dispose();
-            //new TicketDashboardController();
+            menuView.dispose();
+            new TicketDashboardView(loggedUser).display();
         });
     }
 

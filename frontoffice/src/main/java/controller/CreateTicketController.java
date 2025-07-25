@@ -20,7 +20,17 @@ public class CreateTicketController {
 
         }
 
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9-]+$");
+        // Title length validation
+        if (title.length() < 5 || title.length() > 100) {
+            return InsertResult.INVALID_TICKET_TITLE;
+        }
+
+        // Description length validation
+        if (description == null || description.length() < 10 || description.length() > 1000) {
+            return InsertResult.INVALID_TICKET_DESCRIPTION;
+        }
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9- ]+$");
         if (!pattern.matcher(title).matches()) {
             return InsertResult.INVALID_TICKET_TITLE;
         }

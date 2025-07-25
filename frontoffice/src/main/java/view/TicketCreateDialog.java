@@ -1,9 +1,11 @@
 package view;
 
+import controller.CreateTicketController;
 import model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import model.enums.InsertResult;
 
 public class TicketCreateDialog extends JDialog {
 
@@ -49,6 +51,8 @@ public class TicketCreateDialog extends JDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btncreate = new JButton("Create");
         btncancel = new JButton("Cancel");
+        btncreate.addActionListener(e -> create());
+        btncancel.addActionListener(e -> dispose());
 
         buttonPanel.add(btncreate);
         buttonPanel.add(btncancel);
@@ -57,6 +61,28 @@ public class TicketCreateDialog extends JDialog {
         add(panel);
     }
 
+    private void create() {
+        String title = txttitle.getText();
+        String description = txtdescription.getText();
+        int creator_id = loggedUser.getId();
 
+        CreateTicketController controller = new CreateTicketController();
+
+        InsertResult result = controller.createTicket(title, description, creator_id);
+
+        switch (result) {
+            case INCOMPLETE_DATA -> JOptionPane.showMessageDialog(this, "Please fill all fields.");
+            case INVALID_TICKET_TITLE -> JOptionPane.showMessageDialog(this, "Ticket title Invalid, make sure you use only Numbers, Letters or - and has more than 5 characters and less than 100 characters.");
+            case INVALID_TICKET_DESCRIPTION -> JOptionPane.showMessageDialog(this, "Ticket description must be between 10 and 1000 characters.");
+            case INVALID_TICKET_CREATOR -> JOptionPane.showMessageDialog(this, "Invalid creator.");
+            case SUCCESS -> {
+                JOptionPane.showMessageDialog(this, "Ticket created successfully.");
+                this.dispose();
+            }
+            default -> JOptionPane.showMessageDialog(this, "Unexpected error.");
+        }
+
+
+    }
 
 }

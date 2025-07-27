@@ -1,5 +1,6 @@
 package dao;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
 import model.Ticket;
 import utils.ConnectionDB;
 import java.sql.Connection;
@@ -178,6 +179,30 @@ public class TicketDAO {
         return false;
     }
 
+    public Ticket getById(int id) {
+        Ticket ticket = null;
+        String sql = "SELECT * from tickets WHERE id = ?";
+        try (
+            Connection con = ConnectionDB.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
+        ) {
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ticket = new Ticket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setTitle(rs.getString("title"));
+                ticket.setDescription(rs.getString("description"));
+                ticket.setStatus_id(rs.getInt("status_id"));
+                ticket.setCreated_by(rs.getInt("created_by"));
+                ticket.setAssigned_to(rs.getInt("assigned_to"));
+                ticket.setCreated_at(rs.getTimestamp("created_at").toLocalDateTime());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ticket;
+    }
 
 
 

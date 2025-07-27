@@ -22,7 +22,9 @@ public class User {
     private int resetpw;
 
     //Constructor
-    public User () {}
+    public User () {
+        name = "None";
+    }
 
     public User(String user, String password) {
         this.username = user;

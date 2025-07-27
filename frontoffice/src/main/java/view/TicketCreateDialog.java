@@ -1,6 +1,6 @@
 package view;
 
-import controller.CreateTicketController;
+import controller.TicketCreateController;
 import model.User;
 
 import javax.swing.*;
@@ -35,7 +35,7 @@ public class TicketCreateDialog extends JDialog {
         txttitle = new JTextField();
         txtdescription = new JTextArea();
 
-        JLabel teste = new JLabel(loggedUser.getName());
+        JLabel user = new JLabel(loggedUser.getName());
 
         panel.add(new JLabel("Title:"));
         panel.add(txttitle);
@@ -44,7 +44,7 @@ public class TicketCreateDialog extends JDialog {
         panel.add(new JScrollPane(txtdescription));
 
         panel.add(new JLabel("Created by:"));
-        panel.add(teste);
+        panel.add(user);
 
 
         //Buttons bottom Small Panel
@@ -66,7 +66,7 @@ public class TicketCreateDialog extends JDialog {
         String description = txtdescription.getText();
         int creator_id = loggedUser.getId();
 
-        CreateTicketController controller = new CreateTicketController();
+        TicketCreateController controller = new TicketCreateController();
 
         InsertResult result = controller.createTicket(title, description, creator_id);
 

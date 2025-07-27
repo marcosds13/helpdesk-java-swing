@@ -9,6 +9,8 @@ import model.User;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
 
@@ -104,7 +106,7 @@ public class TicketDashboardView extends JFrame {
         btnCreateTicket = new JButton("Create Ticket");
         btnCreateTicket.addActionListener(e -> openCreateTicket());
         btnOpenTicketDetails = new JButton("Open Ticket Details");
-        btnOpenTicketDetails.addActionListener(e -> JOptionPane.showMessageDialog(this, "Not Yet Implemented!"));
+        btnOpenTicketDetails.addActionListener(e -> openDetailsTicket());
         btnBack = new JButton("Back");
         btnBack.addActionListener(e -> {
             TicketDashboardView.this.dispose();
@@ -135,6 +137,16 @@ public class TicketDashboardView extends JFrame {
         setContentPane(mainPanel);
     }
 
+    /**
+     * Loads tickets into a table model for display, filtered based on the role
+     * and ID of the logged-in user. Initializes the table with ticket data,
+     * including details such as ticket ID, title, status, creator, assigned user,
+     * and creation date. Ensures that users with a specific role only see their
+     * own tickets.
+     *
+     * @param loggedUser the currently logged-in user, whose role and ID will
+     *                   determine the tickets visible in the table; must not be null
+     */
     private void loadTickets(User loggedUser) {
         model.setRowCount(0);
         int userRole = loggedUser.getRole_id();
@@ -156,13 +168,57 @@ public class TicketDashboardView extends JFrame {
 
             });
 
+        }
+        autoFitColumns(tickets);
+    }
 
+    /**
+     * Adjusts the column widths of a given JTable to fit the content and header size,
+     * while ensuring the widths remain within a specified minimum and maximum range.
+     *
+     * @param table the JTable whose column widths are to be adjusted; must not be null
+     */
+    private void autoFitColumns(JTable table) {
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            TableColumn tableColumn = table.getColumnModel().getColumn(column);
+            int preferredWidth = 50; // Minimum width
+            int maxWidth = 300; // Max width to avoid crazy wide columns
+
+            // Get width of column header
+            TableCellRenderer headerRenderer = table.getTableHeader().getDefaultRenderer();
+            Component headerComp = headerRenderer.getTableCellRendererComponent(table, tableColumn.getHeaderValue(), false, false, 0, column);
+            preferredWidth = Math.max(headerComp.getPreferredSize().width, preferredWidth);
+
+            // Get max width of cell contents
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
+                Component c = table.prepareRenderer(cellRenderer, row, column);
+                preferredWidth = Math.max(preferredWidth, c.getPreferredSize().width);
+            }
+
+            preferredWidth += 10; // Add a little extra for padding
+            preferredWidth = Math.min(preferredWidth, maxWidth);
+
+            tableColumn.setPreferredWidth(preferredWidth);
         }
     }
 
     private void openCreateTicket() {
         new TicketCreateDialog(this, loggedUser).setVisible(true);
         loadTickets(loggedUser);
+    }
+
+    private void openDetailsTicket() {
+        int row = tickets.getSelectedRow();
+        if (row >= 0) {
+            int ticketID = (int) tickets.getValueAt(row, 0);
+            new TicketDetailsDialog(this, loggedUser, ticketID).setVisible(true);
+            loadTickets(loggedUser);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a ticket.");
+        }
+
+
     }
     public void display() {
         setVisible(true);

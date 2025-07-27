@@ -19,6 +19,7 @@ public class LoginController {
 
     }
 
+
     private void completeLogin() {
         User input = loginView.getDataLogin();
 

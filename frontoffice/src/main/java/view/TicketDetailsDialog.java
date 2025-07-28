@@ -20,7 +20,7 @@ public class TicketDetailsDialog extends JDialog {
     private JTable commentsTable;
     private Ticket ticket;
     private String ticket_statusname;
-    private String ticket_assignedto;
+    private User ticket_assignedto;
     private DefaultTableModel model;
 
 
@@ -28,7 +28,8 @@ public class TicketDetailsDialog extends JDialog {
     private JButton btnWIP1;
     private JButton btnWIP2;
     private JButton btnAddComment;
-
+    private JButton btnUpdateStatus;
+    private JComboBox<String> statusCombo;
 
 
     public TicketDetailsDialog(JFrame owner, User loggedUser, int received_ticket) {
@@ -38,7 +39,7 @@ public class TicketDetailsDialog extends JDialog {
         controller = new TicketDetailsController();
         ticket = controller.getTicketInfo(received_ticket);
         ticket_statusname = controller.getStatusByID(ticket.getStatus_id()).getName();
-        ticket_assignedto = controller.getUserName(ticket.getAssigned_to()).getName();
+        ticket_assignedto = controller.getUserName(ticket.getAssigned_to());
         InicializeComponents();
         commentsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         loadComments(ticket);
@@ -69,10 +70,27 @@ public class TicketDetailsDialog extends JDialog {
         String[] StatusNames = listaStatus.stream()
                 .map(Status::getName)
                 .toArray(String[]::new);
-        JComboBox<String> statusCombo = new JComboBox<>(StatusNames);
+        statusCombo = new JComboBox<>(StatusNames);
         statusCombo.setSelectedItem(ticket_statusname);
 
-        JLabel lblAssigned = new JLabel("<html><b>Assigned to:</b> " + ticket_assignedto + "</html>");
+        JLabel lblAssigned = new JLabel("<html><b>Assigned to:</b> </html>");
+        JComboBox<User> assignedCombo = new JComboBox<>();
+        List<User> users = controller.listAllAgents();
+        assignedCombo.addItem(null);
+        for (User user : users) {
+            assignedCombo.addItem(user);
+        }
+        assignedCombo.setSelectedItem(ticket_assignedto.equals("") ? "None" : ticket_assignedto);
+        assignedCombo.setEnabled(loggedUser.getRole_id() == 1);
+        assignedCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                if (value == null) {
+                    value = "None";
+                }
+                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            }
+        });
 
 
         statusCombo.setEnabled(loggedUser.getRole_id() == 1 || loggedUser.getRole_id() == 2);
@@ -84,6 +102,10 @@ public class TicketDetailsDialog extends JDialog {
 
         gbc.gridx++;
         ticketInfoPanel.add(lblAssigned, gbc);
+        if (loggedUser.getRole_id() == 1) {
+            gbc.gridx++;
+            ticketInfoPanel.add(assignedCombo, gbc);
+        }
 
         gbc.gridx++;
         ticketInfoPanel.add(lblStatus, gbc);
@@ -136,21 +158,34 @@ public class TicketDetailsDialog extends JDialog {
 
         commentsPanel.setPreferredSize(new Dimension(1000, 650));
 
-        // Paging controls
-        JPanel paginationPanel = new JPanel();
-        btnWIP1 = new JButton("WIP1");
-        btnWIP2 = new JButton("WIP2");
-        paginationPanel.add(btnWIP1);
-        paginationPanel.add(btnWIP2);
-        commentsPanel.add(paginationPanel, BorderLayout.SOUTH);
+//        Paging controls - In the future thinking of adding a paging system
+//        JPanel paginationPanel = new JPanel();
+//        btnWIP1 = new JButton("WIP1");
+//        btnWIP2 = new JButton("WIP2");
+//        paginationPanel.add(btnWIP1);
+//        paginationPanel.add(btnWIP2);
+//        commentsPanel.add(paginationPanel, BorderLayout.SOUTH);
 
         add(commentsPanel, BorderLayout.SOUTH); // We'll re-attach to correct position in a moment
 
         // 4. Buttons Panel (Bottom)
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnAddComment = new JButton("Add Comment");
+        btnAddComment.addActionListener(e -> openAddComment());
+        btnUpdateStatus = new JButton("Update Status");
+        btnUpdateStatus.addActionListener(e -> updateStatus());
         btnBack = new JButton("Back");
         buttonsPanel.add(btnAddComment);
+        buttonsPanel.add(btnUpdateStatus);
+        if (loggedUser.getRole_id() == 1) {
+            JButton btnUpdateAssign = new JButton("Update Assignment");
+            btnUpdateAssign.addActionListener(e -> updateAssignment((User) assignedCombo.getSelectedItem()));
+            buttonsPanel.add(btnUpdateAssign);
+        } else if (loggedUser.getRole_id() == 2) {
+            JButton btnTakeOver = new JButton("Take Over");
+            btnTakeOver.addActionListener(e -> takeOver());
+            buttonsPanel.add(btnTakeOver);
+        }
         buttonsPanel.add(btnBack);
         add(buttonsPanel, BorderLayout.PAGE_END);
 
@@ -218,6 +253,123 @@ public class TicketDetailsDialog extends JDialog {
                 column.setResizable(true); // Only Comment can be resized
             }
         }
+    }
+    private void updateAssignment(User selectedUser) {
+        Integer userIdToAssign = null;
+        boolean updated = false;
+
+        try {
+            // This will throw NullPointerException if selectedUser is null
+            userIdToAssign = selectedUser.getId();
+
+            // If userIdToAssign is null, this may throw exception depending on controller code
+            updated = controller.updateTicketAssignment(ticket.getId(), userIdToAssign);
+
+        } catch (NullPointerException e) {
+            // If selectedUser was null, retry with userIdToAssign = null
+            updated = controller.updateTicketAssignment(ticket.getId(), null);
+        }
+
+        if (updated) {
+            ticket_assignedto = selectedUser;
+            JOptionPane.showMessageDialog(this,
+                    "Assignment updated successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Error updating assignment",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+//    private void updateAssignment(User selectedUser) {
+//        // Safely check if assignment has changed
+//        if ((selectedUser == null && ticket_assignedto == null) ||
+//                (selectedUser != null && selectedUser.equals(ticket_assignedto))) {
+//            JOptionPane.showMessageDialog(this,
+//                    "Assignment hasn't changed",
+//                    "No Changes",
+//                    JOptionPane.INFORMATION_MESSAGE);
+//            return;
+//        }
+//
+//        Integer userIdToAssign = (selectedUser == null) ? null : selectedUser.getId();
+//        if (controller.updateTicketAssignment(ticket.getId(), userIdToAssign)) {
+//            ticket_assignedto = selectedUser;
+//            JOptionPane.showMessageDialog(this,
+//                    "Assignment updated successfully",
+//                    "Success",
+//                    JOptionPane.INFORMATION_MESSAGE);
+//        } else {
+//            JOptionPane.showMessageDialog(this,
+//                    "Error updating assignment",
+//                    "Error",
+//                    JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
+
+    private void takeOver() {
+        if (controller.updateTicketAssignment(ticket.getId(), loggedUser.getId())) {
+            ticket_assignedto = loggedUser;
+            JOptionPane.showMessageDialog(this,
+                    "Ticket assigned to you successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Error taking over ticket",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void updateStatus() {
+        String selectedStatus = (String) statusCombo.getSelectedItem();
+        if (selectedStatus.equals(ticket_statusname)) {
+            JOptionPane.showMessageDialog(this,
+                    "Status hasn't changed",
+                    "No Changes",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        List<Status> statuses = controller.listAllStatusTypes();
+        int newStatusId = statuses.stream()
+                .filter(s -> s.getName().equals(selectedStatus))
+                .findFirst()
+                .map(Status::getId)
+                .orElse(-1);
+
+        if (controller.updateTicketStatus(ticket.getId(), newStatusId)) {
+            ticket_statusname = selectedStatus;
+            JOptionPane.showMessageDialog(this,
+                    "Status updated successfully",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Error updating status",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void openAddComment() {
+        if ("CLOSED".equals(ticket_statusname)) {
+            JOptionPane.showMessageDialog(this,
+                    "Cannot add comments to closed tickets.",
+                    "Ticket Closed",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        TicketAddCommentDialog dialog = new TicketAddCommentDialog(this, loggedUser, ticket.getId());
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                loadComments(ticket);
+            }
+        });
     }
 
 }

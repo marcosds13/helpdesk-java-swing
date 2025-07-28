@@ -7,7 +7,6 @@ import dao.StatusDAO;
 import model.Comment;
 import model.Ticket;
 import model.User;
-import model.enums.InsertResult;
 import model.Status;
 
 import java.util.List;
@@ -47,12 +46,24 @@ public class TicketDetailsController {
         return ticketDAO.updateTicket(t);
     }
 
+
+    public boolean updateTicketAssignment(int ticket_id, Integer user_id) {
+        Ticket t = ticketDAO.getById(ticket_id);
+        t.setAssigned_to(user_id);
+        return ticketDAO.updateTicket(t);
+    }
+
     public List<Status> listAllStatusTypes() {
         return statusDAO.ListAll();
     }
 
     public Status getStatusByID(int id) {
         return statusDAO.getById(id);
+    }
+
+    public List<User> listAllAgents() {
+
+        return userDAO.listAllAgents();
     }
 
 }

@@ -54,4 +54,9 @@ public class User {
         return username != null && !username.isEmpty()
                 && password != null && !password.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

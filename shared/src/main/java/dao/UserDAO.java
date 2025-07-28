@@ -44,6 +44,35 @@ public class UserDAO {
     }
 
     /**
+     * Retrieves a list of all users with the role of an Technician from the database.
+     *
+     * This method establishes a connection with the database, executes a query to
+     * fetch all records from the "users" table where the role ID corresponds to agents,
+     * and populates a list of User objects with the retrieved data.
+     *
+     * @return a list of User objects representing all agents in the database. If an
+     *         exception occurs during execution, an empty list is returned.
+     */
+    public List<User> listAllAgents() {
+        List<User> users = new ArrayList<>();
+        try (Connection con = ConnectionDB.getConnection()) {
+            String sql = "SELECT * FROM users WHERE role_id = 2";
+            assert con != null;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                fillUserData(u, rs);
+                users.add(u);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    /**
      * Deletes a user from the database based on the specified ID.
      *
      * This method establishes a connection to the database, executes

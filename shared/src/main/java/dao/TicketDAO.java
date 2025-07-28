@@ -116,7 +116,7 @@ public class TicketDAO {
      * @return true if the ticket was successfully updated, false otherwise
      */
     public boolean updateTicket(Ticket t) {
-        String sql = "UPDATE tickets SET title = ?, description = ?, status_id = ?, created_by = ? WHERE id = ?";
+        String sql = "UPDATE tickets SET title = ?, description = ?, status_id = ?, created_by = ?, assigned_to = ? WHERE id = ?";
         try (
             Connection con = ConnectionDB.getConnection();
             PreparedStatement ps = con.prepareStatement(sql);
@@ -125,7 +125,14 @@ public class TicketDAO {
             ps.setString(2, t.getDescription());
             ps.setInt(3,t.getStatus_id());
             ps.setInt(4,t.getCreated_by());
-            ps.setInt(5,t.getId());
+
+            // --- Handle null for assigned_to ---
+            if (t.getAssigned_to() == null) {
+                ps.setNull(5, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(5, t.getAssigned_to());
+            }
+            ps.setInt(6,t.getId());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {

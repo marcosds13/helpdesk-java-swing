@@ -21,12 +21,11 @@ public class Comment {
 
     //Constructor
     public Comment() {}
-    public Comment(int id, int ticket_id, int user_id, String message) {
-        this.id = id;
+    public Comment(int ticket_id, int user_id, String message) {
+
         this.ticket_id = ticket_id;
         this.user_id = user_id;
         this.message = message;
-        this.sent_at = LocalDateTime.now();
     }
 
      /*

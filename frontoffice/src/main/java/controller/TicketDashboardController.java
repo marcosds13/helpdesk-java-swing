@@ -51,4 +51,8 @@ public class TicketDashboardController {
         return userDAO.getByID(id);
     }
 
+    public boolean deleteTicket(int ticket_id) {
+        return ticketDAO.deleteTicket(ticket_id);
+    }
+
 }

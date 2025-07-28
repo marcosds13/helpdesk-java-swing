@@ -11,8 +11,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.util.List;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.*;
 
 
 public class TicketDashboardView extends JFrame {
@@ -26,6 +25,7 @@ public class TicketDashboardView extends JFrame {
     private JButton btnOpenTicketDetails;
     private JButton btnApplyFilter;
     private JButton btnClearFilter;
+    private JButton btnDeleteTicket;
     private TableRowSorter<DefaultTableModel> rowSorter;
     private JTextField txtFilter;
 
@@ -119,11 +119,21 @@ public class TicketDashboardView extends JFrame {
         userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(Box.createVerticalStrut(30));
 
-        for (JButton btn : new JButton[]{btnRefresh, btnCreateTicket, btnOpenTicketDetails, btnBack}) {
-            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, btn.getPreferredSize().height));
-            buttonPanel.add(btn);
-            buttonPanel.add(Box.createVerticalStrut(10));
+        if (user.getRole_id() == 1) {
+            btnDeleteTicket = new JButton("Delete Ticket");
+            btnDeleteTicket.setForeground(new Color(230, 80, 80));
+            btnDeleteTicket.setFont(btnDeleteTicket.getFont().deriveFont(Font.BOLD));
+            btnDeleteTicket.addActionListener(e -> deleteSelectedTicket());
+        }
+
+        for (JButton btn : new JButton[]{btnRefresh, btnCreateTicket, btnOpenTicketDetails,
+                user.getRole_id() == 1 ? btnDeleteTicket : null, btnBack}) {
+            if (btn != null) {
+                btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+                btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, btn.getPreferredSize().height));
+                buttonPanel.add(btn);
+                buttonPanel.add(Box.createVerticalStrut(10));
+            }
         }
 
 
@@ -260,4 +270,25 @@ public class TicketDashboardView extends JFrame {
         rowSorter.setRowFilter(null);
         loadTickets(loggedUser);
     }
+
+    private void deleteSelectedTicket() {
+        int row = tickets.getSelectedRow();
+        if (row >= 0) {
+            int ticketID = (int) tickets.getValueAt(row, 0);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to delete this ticket?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (controller.deleteTicket(ticketID)) {
+                    loadTickets(loggedUser);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete ticket.");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a ticket to delete.");
+        }
+    }
 }
+

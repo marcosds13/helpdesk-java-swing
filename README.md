@@ -62,7 +62,7 @@ CREATE TABLE comments (
   user_id INT NOT NULL,
   message TEXT NOT NULL,
   sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (ticket_id) REFERENCES tickets(id),
+  FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

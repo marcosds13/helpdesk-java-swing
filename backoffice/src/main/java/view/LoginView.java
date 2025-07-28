@@ -12,6 +12,7 @@ public class LoginView extends JFrame {
     private JPasswordField txtpassword;
     private JButton btnLogin;
 
+
     public LoginView(LoginController Controller) {
         setTitle("Login");
         setSize(300, 200);

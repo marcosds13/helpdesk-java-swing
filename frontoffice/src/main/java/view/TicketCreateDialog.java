@@ -18,7 +18,7 @@ public class TicketCreateDialog extends JDialog {
     private JButton btncancel;
 
     public TicketCreateDialog(JFrame owner, User loggedUser) {
-        super(owner, "Create Ticket", true);
+        super(owner, "Create Ticket - " + loggedUser.getName(), true);
         this.loggedUser = loggedUser;
         setSize(800,300);
         setLocationRelativeTo(owner);

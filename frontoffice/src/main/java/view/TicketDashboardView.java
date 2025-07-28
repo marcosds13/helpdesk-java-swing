@@ -7,10 +7,7 @@ import model.Ticket;
 import model.User;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 import java.awt.*;
 import java.util.List;
 
@@ -27,6 +24,10 @@ public class TicketDashboardView extends JFrame {
     private JButton btnRefresh;
     private JButton btnCreateTicket;
     private JButton btnOpenTicketDetails;
+    private JButton btnApplyFilter;
+    private JButton btnClearFilter;
+    private TableRowSorter<DefaultTableModel> rowSorter;
+    private JTextField txtFilter;
 
 
     public TicketDashboardView(User loggedUser) {
@@ -34,7 +35,7 @@ public class TicketDashboardView extends JFrame {
         this.loggedUser = loggedUser;
 
 
-        setTitle("Ticket Menu"); // Sets the window's title bar text
+        setTitle("Ticket Menu - " + loggedUser.getName()); // Sets the window's title bar text
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 900); // Size of the window
         setLocationRelativeTo(null); // Center on screen
@@ -133,6 +134,24 @@ public class TicketDashboardView extends JFrame {
         // Add contentPanel to mainPanel
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
+        //FILTER Function
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        txtFilter = new JTextField(30);
+        btnApplyFilter = new JButton("Filter");
+        btnClearFilter = new JButton("Clear");
+        filterPanel.add(new JLabel("Filter:"));
+        filterPanel.add(txtFilter);
+        filterPanel.add(btnApplyFilter);
+        filterPanel.add(btnClearFilter);
+
+        rowSorter = new TableRowSorter<>(model);
+        tickets.setRowSorter(rowSorter);
+
+        btnApplyFilter.addActionListener(e -> filterTable());
+        btnClearFilter.addActionListener(e -> clearFilter());
+
+
+        ticketPanel.add(filterPanel, BorderLayout.SOUTH); // <<<<< Correct place!
         // Add mainPanel to JFrame
         setContentPane(mainPanel);
     }
@@ -222,5 +241,23 @@ public class TicketDashboardView extends JFrame {
     }
     public void display() {
         setVisible(true);
+    }
+
+
+    private void filterTable() {
+        String text = txtFilter.getText();
+        if (text.trim().length() == 0) {
+            rowSorter.setRowFilter(null);
+
+        } else {
+            rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+
+        }
+    }
+
+    private void clearFilter(){
+        txtFilter.setText("");
+        rowSorter.setRowFilter(null);
+        loadTickets(loggedUser);
     }
 }

@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.List;
 
@@ -30,10 +31,10 @@ public class TicketDetailsDialog extends JDialog {
     private JButton btnAddComment;
     private JButton btnUpdateStatus;
     private JComboBox<String> statusCombo;
-
+    private JTextField txtFilter;
 
     public TicketDetailsDialog(JFrame owner, User loggedUser, int received_ticket) {
-        super(owner, "Ticket Details", true);
+        super(owner, "Ticket Details - " + loggedUser.getName(), true);
         this.loggedUser = loggedUser;
 
         controller = new TicketDetailsController();
@@ -158,6 +159,7 @@ public class TicketDetailsDialog extends JDialog {
 
         commentsPanel.setPreferredSize(new Dimension(1000, 650));
 
+
 //        Paging controls - In the future thinking of adding a paging system
 //        JPanel paginationPanel = new JPanel();
 //        btnWIP1 = new JButton("WIP1");
@@ -216,6 +218,7 @@ public class TicketDetailsDialog extends JDialog {
 
         }
     }
+
 
     private void autoResizeAndLockColumns(JTable table) {
         for (int col = 0; col < table.getColumnCount(); col++) {
@@ -284,31 +287,6 @@ public class TicketDetailsDialog extends JDialog {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-//    private void updateAssignment(User selectedUser) {
-//        // Safely check if assignment has changed
-//        if ((selectedUser == null && ticket_assignedto == null) ||
-//                (selectedUser != null && selectedUser.equals(ticket_assignedto))) {
-//            JOptionPane.showMessageDialog(this,
-//                    "Assignment hasn't changed",
-//                    "No Changes",
-//                    JOptionPane.INFORMATION_MESSAGE);
-//            return;
-//        }
-//
-//        Integer userIdToAssign = (selectedUser == null) ? null : selectedUser.getId();
-//        if (controller.updateTicketAssignment(ticket.getId(), userIdToAssign)) {
-//            ticket_assignedto = selectedUser;
-//            JOptionPane.showMessageDialog(this,
-//                    "Assignment updated successfully",
-//                    "Success",
-//                    JOptionPane.INFORMATION_MESSAGE);
-//        } else {
-//            JOptionPane.showMessageDialog(this,
-//                    "Error updating assignment",
-//                    "Error",
-//                    JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
 
     private void takeOver() {
         if (controller.updateTicketAssignment(ticket.getId(), loggedUser.getId())) {

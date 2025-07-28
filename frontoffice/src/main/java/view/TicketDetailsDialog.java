@@ -187,6 +187,7 @@ public class TicketDetailsDialog extends JDialog {
             buttonsPanel.add(btnTakeOver);
         }
         buttonsPanel.add(btnBack);
+        btnBack.addActionListener(e -> dispose());
         add(buttonsPanel, BorderLayout.PAGE_END);
 
         // Use a vertical box layout to stack Description and Comments panels
